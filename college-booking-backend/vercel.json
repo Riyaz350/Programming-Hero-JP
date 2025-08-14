@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "/college-booking-backend/api/**/*.js",
+      "src": "college-booking-backend/api/**/*.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/college-booking-backend/api/index.js"
+      "dest": "college-booking-backend/api/index.js"
     }
   ]
 }
