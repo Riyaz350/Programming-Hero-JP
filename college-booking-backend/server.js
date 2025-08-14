@@ -1,4 +1,4 @@
-import { expressApp as app } from "./api/index.js"; // adjust path if needed
+import { expressApp as app } from "./api/index.js"; 
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
