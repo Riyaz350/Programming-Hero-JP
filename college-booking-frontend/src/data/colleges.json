@@ -1,0 +1,158 @@
+[
+  {
+    "id": "c1",
+    "name": "Stanford University",
+    "image": "https://cdn.britannica.com/25/121725-050-8BF363EC/Hoover-Tower-Stanford-University-California.jpg",
+    "rating": 4.6,
+    "admissionStart": "2025-05-10",
+    "admissionEnd": "2025-08-31",
+    "researchCount": 36,
+    "events": [
+      {
+        "title": "TechFest 2025",
+        "date": "2025-09-20",
+        "desc": "Annual technology festival with hackathons and talks."
+      },
+      {
+        "title": "Green Summit",
+        "date": "2025-10-05",
+        "desc": "Climate action conference led by students."
+      }
+    ],
+    "researchHistory": [
+      "AI-assisted irrigation for urban farms (2024)",
+      "Solar microgrid optimization in rural areas (2023)"
+    ],
+    "sports": [
+      "Football",
+      "Cricket",
+      "Badminton"
+    ],
+    "admissionProcess": "Apply online with transcripts, SAT/IELTS (optional), and a statement of purpose."
+  },
+  {
+    "id": "c2",
+    "name": "Massachusetts Institute of Technology",
+    "image": "https://www.mit.edu/files/images/201807/15656704711_00457bd2c9_b_1.jpg",
+    "rating": 4.4,
+    "admissionStart": "2025-05-01",
+    "admissionEnd": "2025-09-15",
+    "researchCount": 22,
+    "events": [
+      {
+        "title": "Innovation Expo",
+        "date": "2025-11-01",
+        "desc": "Showcase of student-built prototypes."
+      }
+    ],
+    "researchHistory": [
+      "Low-cost water purification membranes (2024)",
+      "River biodiversity indexing (2022)"
+    ],
+    "sports": [
+      "Basketball",
+      "Swimming",
+      "Athletics"
+    ],
+    "admissionProcess": "Submit online form, entrance assessment, and a short interview."
+  },
+  {
+    "id": "c3",
+    "name": "New York University",
+    "image": "https://uniplusglobal.com/media/university_images/New_York_University_439e3d1807.webp",
+    "rating": 4.7,
+    "admissionStart": "2025-06-01",
+    "admissionEnd": "2025-08-25",
+    "researchCount": 41,
+    "events": [
+      {
+        "title": "Art Week",
+        "date": "2025-09-10",
+        "desc": "Exhibitions and live performances."
+      }
+    ],
+    "researchHistory": [
+      "Interactive media for education (2024)",
+      "Cultural preservation through AR (2023)"
+    ],
+    "sports": [
+      "Table Tennis",
+      "Volleyball"
+    ],
+    "admissionProcess": "Portfolio submission, statement of intent, and online application."
+  },
+  {
+    "id": "c4",
+    "name": "University of Toronto",
+    "image": "https://www.trinity.utoronto.ca/wp-content/uploads/2019/01/trinity-home-wide-01.jpg",
+    "rating": 4.2,
+    "admissionStart": "2025-05-15",
+    "admissionEnd": "2025-09-10",
+    "researchCount": 18,
+    "events": [
+      {
+        "title": "Career Fair",
+        "date": "2025-10-12",
+        "desc": "Meet employers and alumni."
+      }
+    ],
+    "researchHistory": [
+      "Urban mobility studies (2024)"
+    ],
+    "sports": [
+      "Cricket",
+      "Basketball",
+      "Chess"
+    ],
+    "admissionProcess": "Fill online form, upload documents, and pay application fee."
+  },
+  {
+    "id": "c5",
+    "name": "Technical University of Munich",
+    "image": "https://www.mgt.tum.de/fileadmin/_processed_/1/5/csm_tum-school-of-management-vr-experience-intro-611x459px_64d3f84c6b.jpg",
+    "rating": 4.5,
+    "admissionStart": "2025-05-20",
+    "admissionEnd": "2025-09-20",
+    "researchCount": 29,
+    "events": [
+      {
+        "title": "Robotics Open",
+        "date": "2025-10-30",
+        "desc": "Inter-college robotics competition."
+      }
+    ],
+    "researchHistory": [
+      "Autonomous drone swarms (2024)"
+    ],
+    "sports": [
+      "Football",
+      "Tennis",
+      "Athletics"
+    ],
+    "admissionProcess": "Standard online application with optional interview."
+  },
+  {
+    "id": "c6",
+    "name": "Johns Hopkins University",
+    "image": "https://www.igniteastar.com/wp-content/uploads/2023/09/jh-1.jpg",
+    "rating": 4.3,
+    "admissionStart": "2025-05-05",
+    "admissionEnd": "2025-09-01",
+    "researchCount": 33,
+    "events": [
+      {
+        "title": "Global Health Symposium",
+        "date": "2025-10-18",
+        "desc": "Panels on public health and policy."
+      }
+    ],
+    "researchHistory": [
+      "mRNA vaccine delivery optimization (2023)"
+    ],
+    "sports": [
+      "Cricket",
+      "Swimming"
+    ],
+    "admissionProcess": "MCAT or equivalent, transcripts, and online form."
+  }
+]
