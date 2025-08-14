@@ -17,7 +17,7 @@ const app = express();
 
 // Root route
 app.get("/", (req, res) => {
-  res.send("🎓 Welcome to the College Booking API"); 
+  res.send("Welcome to the College Booking API"); 
 });
 
 // Middlewares
