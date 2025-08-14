@@ -1,10 +1,14 @@
-import express from 'express'
-import bcrypt from 'bcrypt'
+import express from 'express' 
 import User from '../models/User.js'
 import { generateToken } from '../config/jwt.js'
+import bcrypt from 'bcryptjs';
+
 
 const router = express.Router()
 
+router.get('/', (req, res) => {
+  res.json({ status: 'Auth API is active' });
+});
 // Register
 router.post('/register', async (req, res) => {
   const { name, email, password } = req.body
