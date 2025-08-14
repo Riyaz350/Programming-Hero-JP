@@ -15,6 +15,12 @@ dotenv.config();
 
 const app = express();
 
+// Root route
+app.get("/", (req, res) => {
+  res.send("🎓 Welcome to the College Booking API");
+  console.log("API accessed at:", new Date().toISOString());
+});
+
 // Middlewares
 app.use(cors());
 app.use(express.json({ limit: "2mb" }));
@@ -37,14 +43,18 @@ app.use((err, req, res, next) => {
 // MongoDB connection for serverless
 let conn = null;
 const connectDB = async () => {
-  if (conn) return conn; // reuse existing connection
+  if (conn) return conn;
   conn = await mongoose.connect(process.env.MONGODB_URI);
   return conn;
 };
 
-// Export as Vercel serverless function
-export default serverless(app, {
-  requestHandler: async (req, res) => {
-    await connectDB();
-  },
-});
+// Connect once on cold start (Vercel)
+connectDB()
+  .then(() => console.log("✅ MongoDB connected (serverless)"))
+  .catch((err) => console.error("❌ MongoDB connection failed:", err));
+
+// Export for Vercel
+export default serverless(app);
+
+// Optional: export raw app for local dev
+export const expressApp = app;
