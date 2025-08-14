@@ -4,7 +4,14 @@ import { protect } from '../middleware/auth.js'
 
 const router = express.Router()
 
+router.get('/', protect, async (req, res) => {
+  res.json({ status: 'users API is active' });
+})
+
+
+
 // Get user profile
+
 router.get('/profile', protect, async (req, res) => {
   res.json(req.user)
 })
