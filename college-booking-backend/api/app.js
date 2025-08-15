@@ -3,27 +3,18 @@ import "./config/db.js"
 import express from "express"
 const bodyParser = express.json
 import cors from "cors"
+import routes from "./routes/index.js"
 
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://programming-hero-jp.vercel.app'
-]
+const app = express()
 
+// CORS configuration
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true) // allow non-browser requests
-    if (allowedOrigins.includes(origin)) callback(null, true)
-    else callback(new Error('Not allowed by CORS'))
-  },
-  methods: ['GET','POST','PUT','DELETE','PATCH','OPTIONS'],
-  allowedHeaders: ['Content-Type','Authorization'],
-  credentials: true
+    origin: process.env.CORS_ORIGIN || '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }
 
-app.use(cors(corsOptions))
-app.options('*', cors(corsOptions)) // handle preflight
-
-
+app.use(cors(corsOptions)) 
 app.use(bodyParser())
 
 // Root route handler
