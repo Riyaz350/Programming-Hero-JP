@@ -3,9 +3,6 @@ import "./config/db.js"
 import express from "express"
 const bodyParser = express.json
 import cors from "cors"
-import routes from "./routes/index.js"
-
-const app = express()
 
 const allowedOrigins = [
   'http://localhost:5173',
@@ -13,19 +10,19 @@ const allowedOrigins = [
 ]
 
 const corsOptions = {
-  origin: function (origin, callback) {
+  origin: (origin, callback) => {
     if (!origin) return callback(null, true) // allow non-browser requests
-    if (allowedOrigins.indexOf(origin) !== -1) callback(null, true)
+    if (allowedOrigins.includes(origin)) callback(null, true)
     else callback(new Error('Not allowed by CORS'))
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET','POST','PUT','DELETE','PATCH','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
   credentials: true
 }
 
-// Place CORS middleware **before routes**
 app.use(cors(corsOptions))
-app.options('*', cors(corsOptions))
+app.options('*', cors(corsOptions)) // handle preflight
+
 
 app.use(bodyParser())
 
