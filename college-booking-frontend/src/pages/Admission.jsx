@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { useAuth } from '../state/AuthContext'
 import { useEffect, useState } from 'react'
 import useAxiosPublic from '../hook/useAxiosPublic'
-import collegesData from '../data/colleges.json' // adjust path if needed
+import collegesData from '../data/colleges.json'  
 
 export default function Admission() {
   const { user } = useAuth()
@@ -22,12 +22,12 @@ export default function Admission() {
           : data.collegeName,
         candidateName: data.candidateName,
         subject: data.subject,
-        email: data.email,           // candidate email
+        email: data.email,          
         phone: data.phone,
         address: data.address,
         dob: data.dob,
         image: data.image,
-        applicantEmail: user?.email  // logged-in user
+        applicantEmail: user?.email   
       })
 
       alert('Application submitted!')
