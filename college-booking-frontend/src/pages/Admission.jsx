@@ -1,17 +1,41 @@
 import { useForm } from 'react-hook-form'
-import { useData } from '../state/DataContext'
 import { useAuth } from '../state/AuthContext'
+import { useEffect, useState } from 'react'
+import useAxiosPublic from '../hook/useAxiosPublic'
+import collegesData from '../data/colleges.json' // adjust path if needed
 
 export default function Admission() {
-  const { colleges, addApplication } = useData()
   const { user } = useAuth()
+  const axiosPublic = useAxiosPublic()
   const { register, handleSubmit, reset } = useForm()
+  const [colleges, setColleges] = useState([])
 
-  const onSubmit = (data) => {
-    const app = { id: crypto.randomUUID(), userId: user.uid, ...data, createdAt: new Date().toISOString() }
-    addApplication(app)
-    alert('Application submitted! Check My College page.')
-    reset()
+  useEffect(() => {
+    setColleges(collegesData)
+  }, [])
+
+  const onSubmit = async (data) => {
+    try {
+      await axiosPublic.post('/applications', {
+        collegeName: data.collegeId
+          ? colleges.find(c => c.id === data.collegeId)?.name
+          : data.collegeName,
+        candidateName: data.candidateName,
+        subject: data.subject,
+        email: data.email,           // candidate email
+        phone: data.phone,
+        address: data.address,
+        dob: data.dob,
+        image: data.image,
+        applicantEmail: user?.email  // logged-in user
+      })
+
+      alert('Application submitted!')
+      reset()
+    } catch (err) {
+      console.error(err)
+      alert('Failed to submit application')
+    }
   }
 
   return (
@@ -23,9 +47,12 @@ export default function Admission() {
             <label className="label">Select College</label>
             <select className="input" {...register('collegeId', { required: true })}>
               <option value="">-- choose --</option>
-              {colleges.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              {colleges.map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
             </select>
           </div>
+
           <div className="grid md:grid-cols-2 gap-3">
             <div>
               <label className="label">Candidate Name</label>
@@ -37,7 +64,11 @@ export default function Admission() {
             </div>
             <div>
               <label className="label">Candidate Email</label>
-              <input type="email" className="input" defaultValue={user?.email || ''} {...register('email', { required: true })} />
+              <input
+                type="email"
+                className="input"
+                {...register('email', { required: true })}
+              />
             </div>
             <div>
               <label className="label">Candidate Phone</label>
@@ -56,6 +87,7 @@ export default function Admission() {
               <input className="input" placeholder="https://..." {...register('image')} />
             </div>
           </div>
+
           <button className="btn bg-blue-600 text-white">Submit</button>
         </form>
       </div>

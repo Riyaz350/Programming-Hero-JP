@@ -1,20 +1,54 @@
 import express from 'express'
 import Application from '../models/Application.js'
-import { protect } from '../middleware/auth.js'
 
 const router = express.Router()
 
-// Create application
-router.post('/', protect, async (req, res) => {
-  const { collegeName, candidateName, subject, email, phone, address, dob, image } = req.body
-  const app = await Application.create({ user: req.user._id, collegeName, candidateName, subject, email, phone, address, dob, image })
-  res.status(201).json(app)
+// Create application (public, no auth)
+router.post('/', async (req, res) => {
+  try {
+    const {
+      collegeName,
+      candidateName,
+      subject,
+      email,
+      phone,
+      address,
+      dob,
+      image,
+      applicantEmail
+    } = req.body
+
+    const app = await Application.create({
+      applicantEmail, // logged-in user email
+      collegeName,
+      candidateName,
+      subject,
+      email,
+      phone,
+      address,
+      dob,
+      image
+    })
+
+    res.status(201).json(app)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Failed to create application', error: err.message })
+  }
 })
 
-// Get user's applications
-router.get('/', protect, async (req, res) => {
-  const apps = await Application.find({ user: req.user._id })
-  res.json(apps)
+// Get applications by applicantEmail
+router.get('/', async (req, res) => {
+  try {
+    const { applicantEmail } = req.query
+    if (!applicantEmail) return res.status(400).json({ message: 'applicantEmail is required' })
+
+    const apps = await Application.find({ applicantEmail })
+    res.json(apps)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Failed to fetch applications', error: err.message })
+  }
 })
 
 export default router

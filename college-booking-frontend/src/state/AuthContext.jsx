@@ -6,7 +6,8 @@ import {
   sendPasswordResetEmail,
   signOut,
   updateProfile,
-  signInWithPopup
+  signInWithPopup,
+  onAuthStateChanged
 } from 'firebase/auth'
 import useAxiosPublic from '../hook/useAxiosPublic'
 
@@ -17,31 +18,53 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
   const axiosPublic = useAxiosPublic()
 
-  // Fetch backend user using token from localStorage
+  // Fetch backend user using token
   const fetchBackendUser = async () => {
     const token = localStorage.getItem('token')
-    if (!token) {
-      setUser(null)
-      setLoading(false)
-      return
-    }
+    if (!token) return null
 
     try {
       const res = await axiosPublic.get('/users/profile', {
         headers: { Authorization: `Bearer ${token}` },
       })
-      setUser(res.data)
+      return res.data
     } catch (err) {
       console.log('Failed to fetch backend user:', err)
-      setUser(null)
       localStorage.removeItem('token')
-    } finally {
-      setLoading(false)
+      return null
     }
   }
 
+  // Initialize on app mount
   useEffect(() => {
-    fetchBackendUser()
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const token = localStorage.getItem('token')
+        if (token) {
+          // If backend token exists, fetch backend user
+          const backendUser = await fetchBackendUser()
+          setUser(backendUser || {
+            name: firebaseUser.displayName,
+            email: firebaseUser.email,
+            uid: firebaseUser.uid,
+            photoURL: firebaseUser.photoURL
+          })
+        } else {
+          // No backend token, use Firebase user only
+          setUser({
+            name: firebaseUser.displayName,
+            email: firebaseUser.email,
+            uid: firebaseUser.uid,
+            photoURL: firebaseUser.photoURL
+          })
+        }
+      } else {
+        setUser(null)
+      }
+      setLoading(false)
+    })
+
+    return unsubscribe
   }, [])
 
   // Email/password login
@@ -49,7 +72,8 @@ export function AuthProvider({ children }) {
     const res = await axiosPublic.post('/auth/login', { email, password })
     if (res.data?.token) {
       localStorage.setItem('token', res.data.token)
-      await fetchBackendUser()
+      const backendUser = await fetchBackendUser()
+      setUser(backendUser)
     }
   }
 
@@ -58,30 +82,31 @@ export function AuthProvider({ children }) {
     const res = await axiosPublic.post('/auth/register', { name, email, password })
     if (res.data?.token) {
       localStorage.setItem('token', res.data.token)
-      await fetchBackendUser()
+      const backendUser = await fetchBackendUser()
+      setUser(backendUser)
     }
   }
 
-  // Firebase social login (use Firebase user if no backend token)
+  // Firebase Google login
   const loginWithGoogle = async () => {
     const cred = await signInWithPopup(auth, googleProvider)
     const firebaseUser = cred.user
 
     const token = localStorage.getItem('token')
     if (!token) {
-      // No backend token, just use Firebase user
       setUser({
         name: firebaseUser.displayName,
         email: firebaseUser.email,
         photoURL: firebaseUser.photoURL,
-        uid: firebaseUser.uid,
+        uid: firebaseUser.uid
       })
     } else {
-      // Optional: fetch backend user if token exists
-      await fetchBackendUser()
+      const backendUser = await fetchBackendUser()
+      setUser(backendUser)
     }
   }
 
+  // Firebase GitHub login
   const loginWithGithub = async () => {
     const cred = await signInWithPopup(auth, githubProvider)
     const firebaseUser = cred.user
@@ -92,18 +117,20 @@ export function AuthProvider({ children }) {
         name: firebaseUser.displayName,
         email: firebaseUser.email,
         photoURL: firebaseUser.photoURL,
-        uid: firebaseUser.uid,
+        uid: firebaseUser.uid
       })
     } else {
-      await fetchBackendUser()
+      const backendUser = await fetchBackendUser()
+      setUser(backendUser)
     }
   }
 
-  // Firebase password reset (optional)
+  // Firebase password reset
   const reset = (email) => sendPasswordResetEmail(auth, email)
 
   // Logout
-  const logout = () => {
+  const logout = async () => {
+    await signOut(auth)
     localStorage.removeItem('token')
     setUser(null)
   }
@@ -119,7 +146,7 @@ export function AuthProvider({ children }) {
         reset,
         logout,
         loginWithGoogle,
-        loginWithGithub,
+        loginWithGithub
       }}
     >
       {children}
