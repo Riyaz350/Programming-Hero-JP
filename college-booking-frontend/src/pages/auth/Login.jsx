@@ -1,40 +1,53 @@
-import { useForm } from 'react-hook-form'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../state/AuthContext'
+import { useForm } from "react-hook-form";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../state/AuthContext";
+import Swal from "sweetalert2";
 
 export default function Login() {
-  const { register, handleSubmit } = useForm()
-  const { login, loginWithGoogle, loginWithGithub } = useAuth()
-  const nav = useNavigate()
-  const loc = useLocation()
-  const from = loc.state?.from?.pathname || '/'
+  const { register, handleSubmit } = useForm();
+  const { login, loginWithGoogle, loginWithGithub } = useAuth();
+  const nav = useNavigate();
+  const loc = useLocation();
+  const from = loc.state?.from?.pathname || "/";
 
   const onSubmit = async (data) => {
     try {
-      await login(data.email, data.password)
-      nav(from, { replace: true })
+      await login(data.email, data.password);
+      nav(from, { replace: true });
     } catch (err) {
-      alert('Login failed: ' + (err.response?.data?.message || err.message))
+      Swal.fire({
+        icon: "error",
+        title: "Login Failed",
+        text: err.response?.data?.message || err.message,
+      });
     }
-  }
+  };
 
   const handleGoogleLogin = async () => {
     try {
-      await loginWithGoogle()
-      nav(from, { replace: true })
+      await loginWithGoogle();
+      nav(from, { replace: true });
     } catch (err) {
-      alert('Google login failed: ' + err.message)
+      Swal.fire({
+        icon: "error",
+        title: "Google Login Failed",
+        text: err.message,
+      });
     }
-  }
+  };
 
   const handleGithubLogin = async () => {
     try {
-      await loginWithGithub()
-      nav(from, { replace: true })
+      await loginWithGithub();
+      nav(from, { replace: true });
     } catch (err) {
-      alert('GitHub login failed: ' + err.message)
+      Swal.fire({
+        icon: "error",
+        title: "GitHub Login Failed",
+        text: err.message,
+      });
     }
-  }
+  };
 
   return (
     <div className="max-w-md mx-auto card space-y-4">
@@ -43,12 +56,20 @@ export default function Login() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
         <div>
           <label className="label">Email</label>
-          <input className="input" type="email" {...register('email', { required: true })} />
+          <input
+            className="input"
+            type="email"
+            {...register("email", { required: true })}
+          />
         </div>
 
         <div>
           <label className="label">Password</label>
-          <input className="input" type="password" {...register('password', { required: true })} />
+          <input
+            className="input"
+            type="password"
+            {...register("password", { required: true })}
+          />
         </div>
 
         <button className="btn bg-blue-600 text-white w-full">Login</button>
@@ -73,12 +94,17 @@ export default function Login() {
       </div>
 
       <div className="text-sm text-center mt-2">
-        <Link to="/reset" className="text-blue-600">Forgot password?</Link>
+        <Link to="/reset" className="text-blue-600">
+          Forgot password?
+        </Link>
       </div>
 
       <p className="text-sm text-center">
-        No account? <Link to="/register" className="text-blue-600">Register</Link>
+        No account?{" "}
+        <Link to="/register" className="text-blue-600">
+          Register
+        </Link>
       </p>
     </div>
-  )
+  );
 }

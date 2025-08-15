@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../state/AuthContext'
 import useAxiosPublic from '../hook/useAxiosPublic'
+import Swal from 'sweetalert2'
 
 export default function MyCollege() {
   const { user } = useAuth()
@@ -39,11 +40,23 @@ export default function MyCollege() {
         userEmail: user.email
       })
 
-      alert('Review added successfully! It will show on the Home page.')
+      Swal.fire({
+        icon: 'success',
+        title: 'Review added!',
+        text: 'Your review was added successfully and will show on the Home page.',
+        timer: 2000,
+        showConfirmButton: false
+      })
       setReview({ collegeId: '', rating: 5, text: '' })
     } catch (err) {
       console.error('Failed to submit review:', err)
-      alert('Failed to add review.')
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed to add review',
+        text: 'There was an error submitting your review. Please try again later.',
+        timer: 2000,
+        showConfirmButton: false
+      })
     }
   }
 

@@ -3,7 +3,7 @@ import { useAuth } from '../state/AuthContext'
 import { useEffect, useState } from 'react'
 import useAxiosPublic from '../hook/useAxiosPublic'
 import collegesData from '../data/colleges.json'  
-
+import Swal from 'sweetalert2'
 export default function Admission() {
   const { user } = useAuth()
   const axiosPublic = useAxiosPublic()
@@ -30,11 +30,20 @@ export default function Admission() {
         applicantEmail: user?.email   
       })
 
-      alert('Application submitted!')
+      Swal.fire({
+        icon: 'success',
+        title: 'Application submitted!',
+        showConfirmButton: false,
+        timer: 1500
+      })
       reset()
     } catch (err) {
       console.error(err)
-      alert('Failed to submit application')
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed to submit application',
+        text: err.message || 'Something went wrong'
+      })
     }
   }
 

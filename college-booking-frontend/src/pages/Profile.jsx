@@ -1,6 +1,7 @@
 import useAxiosPublic from './../hook/useAxiosPublic' // adjust path if needed
 import { useAuth } from '../state/AuthContext'
 import { useState, useEffect } from 'react'
+import Swal from 'sweetalert2'
 
 export default function Profile() {
   const axiosPublic = useAxiosPublic()
@@ -46,9 +47,18 @@ export default function Profile() {
     if (setUser) setUser(res.data)
     localStorage.setItem('cb_university', form.university)
     localStorage.setItem('cb_address', form.address)
-    alert('Profile updated')
+    Swal.fire({
+      icon: 'success',
+      title: 'Profile updated',
+      showConfirmButton: false,
+      timer: 1500
+    })
   } catch (err) {
-    alert('Failed to update profile')
+    Swal.fire({
+      icon: 'error',
+      title: 'Failed to update profile',
+      text: err?.response?.data?.message || err.message || 'An error occurred'
+    })
   }
   setSaving(false)
 }

@@ -19,7 +19,7 @@ export default function Register() {
       });
       if (res.data?.token) {
         localStorage.setItem("token", res.data.token);
-        nav("/");
+        nav("/login");
         window.location.reload();
       }
     } catch (err) {
