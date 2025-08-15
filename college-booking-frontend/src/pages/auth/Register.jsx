@@ -20,6 +20,7 @@ export default function Register() {
       if (res.data?.token) {
         localStorage.setItem("token", res.data.token);
         nav("/");
+        window.location.reload();
       }
     } catch (err) {
       if (err.response?.data.message) {
