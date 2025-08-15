@@ -1,10 +1,10 @@
 import "./config/db.js"
 
 import express from "express"
-const bodyParser = express.json
 import cors from "cors"
 import routes from "./routes/index.js"
 
+const bodyParser = express.json
 const app = express()
 
 // CORS configuration
