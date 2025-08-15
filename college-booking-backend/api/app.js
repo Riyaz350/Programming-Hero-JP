@@ -8,13 +8,28 @@ import routes from "./routes/index.js"
 const app = express()
 
 // CORS configuration
+// CORS configuration
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://programming-hero-jp.vercel.app'
+]
+
 const corsOptions = {
-    origin: process.env.CORS_ORIGIN || '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+  origin: function (origin, callback) {
+    // allow requests with no origin like mobile apps or curl
+    if (!origin) return callback(null, true)
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }
 
 app.use(cors(corsOptions))
+
 app.use(bodyParser())
 
 // Root route handler
