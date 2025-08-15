@@ -9,7 +9,14 @@ const app = express();
 await dbConnect();
 
 // CORS setup
-app.use(cors({ origin: ["https://programming-hero-jp.vercel.app","http://localhost:5173"], credentials: true }));
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://programming-hero-jp.vercel.app",
+    "https://programming-hero-jp-vhgk.vercel.app"
+  ],
+  credentials: true,
+}));
 
 
 // Body parser
@@ -21,7 +28,7 @@ app.get("/", (req, res) => {
     message: "Welcome to Student Booking API",
     version: "1.0.0",
     status: "active",
-    documentation: "/api/v1/docs"
+    documentation: "/api/v1/docs",
   });
 });
 
@@ -39,8 +46,8 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({
     error: {
       message: err.message || "Internal Server Error",
-      status: err.status || 500
-    }
+      status: err.status || 500,
+    },
   });
 });
 
@@ -49,8 +56,8 @@ app.use((req, res) => {
   res.status(404).json({
     error: {
       message: "Route not found",
-      status: 404
-    }
+      status: 404,
+    },
   });
 });
 
