@@ -9,14 +9,8 @@ const app = express();
 await dbConnect();
 
 // CORS setup
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://programming-hero-jp.vercel.app",
-    "https://programming-hero-jp-vhgk.vercel.app"
-  ],
-  credentials: true,
-}));
+app.use(cors({ origin: "*", credentials: true }));
+
 
 
 // Body parser
