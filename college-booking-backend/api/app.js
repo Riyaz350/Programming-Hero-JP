@@ -1,27 +1,59 @@
-import express from "express";
-import cors from "cors";
-import morgan from "morgan";
-import authRoutes from "./routes/auth.js";
-import userRoutes from "./routes/users.js";
-import applicationRoutes from "./routes/applications.js";
-import reviewRoutes from "./routes/reviews.js";
-import healthRoutes from "./routes/health.js";
+import "./config/db.js"
 
-const app = express();
+import express from "express"
+const bodyParser = express.json
+import cors from "cors"
+import routes from "./routes/index.js"
 
-// Middlewares
-app.use(cors());
-app.use(express.json({ limit: "2mb" }));
-app.use(morgan("dev"));
+const app = express()
 
-// Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/applications", applicationRoutes);
-app.use("/api/reviews", reviewRoutes);
-app.use("/api/health", healthRoutes);
+// CORS configuration
+const corsOptions = {
+    origin: process.env.CORS_ORIGIN || '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}
 
-// Fallbacks
-app.use((req, res) => res.status(404).json({ message: "Route not found" }));
+app.use(cors(corsOptions))
+app.use(bodyParser())
 
-export default app; // ✅ This line is required for default import
+// Root route handler
+app.get('/', (req, res) => {
+    res.status(200).json({
+        message: 'Welcome to Student Booking API',
+        version: '1.0.0',
+        status: 'active',
+        documentation: '/api/v1/docs'
+    })
+})
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() })
+})
+
+// API routes
+app.use("/api/v1", routes)
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack)
+    res.status(err.status || 500).json({
+        error: {
+            message: err.message || 'Internal Server Error',
+            status: err.status || 500
+        }
+    })
+})
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).json({
+        error: {
+            message: 'Route not found',
+            status: 404
+        }
+    })
+})
+
+export default app

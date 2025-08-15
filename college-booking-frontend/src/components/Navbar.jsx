@@ -25,7 +25,7 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <button onClick={() => navigate('/profile')} className="btn bg-gray-100">{user.displayName || user.email}</button>
+              <button onClick={() => navigate('/profile')} className="btn bg-gray-100">{user.name || user.email}</button>
               <button onClick={handleLogout} className="btn bg-red-50">Logout</button>
             </>
           ) : (
