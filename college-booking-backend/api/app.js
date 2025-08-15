@@ -1,59 +1,57 @@
-import "./config/db.js"
+import express from "express";
+import cors from "cors";
+import routes from "./routes/index.js";
+import dbConnect from "./config/db.js";
 
-import express from "express"
-import cors from "cors"
-import routes from "./routes/index.js"
+const app = express();
 
-const bodyParser = express.json
-const app = express()
+// Connect to DB
+await dbConnect();
 
-// CORS configuration
-const corsOptions = {
-    origin: process.env.CORS_ORIGIN || '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}
+// CORS setup
+app.use(cors({ origin: ["https://programming-hero-jp.vercel.app","http://localhost:5173"], credentials: true }));
 
-app.use(cors(corsOptions)) 
-app.use(bodyParser())
 
-// Root route handler
-app.get('/', (req, res) => {
-    res.status(200).json({
-        message: 'Welcome to Student Booking API',
-        version: '1.0.0',
-        status: 'active',
-        documentation: '/api/v1/docs'
-    })
-})
+// Body parser
+app.use(express.json());
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() })
-})
+// Root route
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Welcome to Student Booking API",
+    version: "1.0.0",
+    status: "active",
+    documentation: "/api/v1/docs"
+  });
+});
+
+// Health check
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
 
 // API routes
-app.use("/api/v1", routes)
+app.use("/api/v1", routes);
 
-// Error handling middleware
+// Error handling
 app.use((err, req, res, next) => {
-    console.error(err.stack)
-    res.status(err.status || 500).json({
-        error: {
-            message: err.message || 'Internal Server Error',
-            status: err.status || 500
-        }
-    })
-})
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    error: {
+      message: err.message || "Internal Server Error",
+      status: err.status || 500
+    }
+  });
+});
 
 // 404 handler
 app.use((req, res) => {
-    res.status(404).json({
-        error: {
-            message: 'Route not found',
-            status: 404
-        }
-    })
-})
+  res.status(404).json({
+    error: {
+      message: "Route not found",
+      status: 404
+    }
+  });
+});
 
-export default app
+export default app;
