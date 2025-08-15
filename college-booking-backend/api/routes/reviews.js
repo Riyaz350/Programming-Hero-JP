@@ -1,20 +1,49 @@
-import express from 'express'
-import Review from '../models/Review.js'
-import { protect } from '../middleware/auth.js'
+import express from "express";
+import Review from "../models/Review.js";
 
-const router = express.Router()
+const router = express.Router();
 
 // Create review
-router.post('/', protect, async (req, res) => {
-  const { collegeName, rating, comment } = req.body
-  const review = await Review.create({ user: req.user._id, collegeName, rating, comment })
-  res.status(201).json(review)
-})
+router.post("/", async (req, res) => {
+  try {
+    const { collegeName, rating, comment, userEmail } = req.body;
 
-// Get all reviews
-router.get('/', async (req, res) => {
-  const reviews = await Review.find().populate('user', 'name')
-  res.json(reviews)
-})
+    if (!collegeName || !rating || !comment || !userEmail) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
-export default router
+    const review = await Review.create({
+      userEmail,
+      collegeName,
+      rating,
+      comment,
+    });
+
+    res.status(201).json(review);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Failed to create review", error: err.message });
+  }
+});
+
+// Get reviews by college name
+router.post("/filter", async (req, res) => {
+  try {
+    const { collegeName } = req.body;
+
+    if (!collegeName) {
+      return res.status(400).json({ message: "collegeName is required" });
+    }
+
+    // Query reviews where collegeName matches
+    const reviews = await Review.find({ collegeName: collegeName.trim() });
+
+    res.json(reviews);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+export default router;

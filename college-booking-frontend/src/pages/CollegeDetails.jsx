@@ -1,26 +1,36 @@
 import { useParams } from 'react-router-dom'
 import { useData } from '../state/DataContext'
 import { useEffect, useState } from 'react'
+import useAxiosPublic from '../hook/useAxiosPublic'
 
 export default function CollegeDetails() {
   const { id } = useParams()
   const { colleges } = useData()
   const college = colleges.find(c => c.id === id)
 
+  const axiosPublic = useAxiosPublic()
   const [ratings, setRatings] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/src/data/reviews.json')
-      .then(res => res.json())
-      .then(data => {
-        // Filter reviews for this college by name
-        const filtered = data.filter(r => r.collegeName === college?.name)
-        setRatings(filtered)
+    if (!college?.name) return
+
+    const fetchReviews = async () => {
+      try {
+        const res = await axiosPublic.post('/reviews/filter', {
+          collegeName: college.name
+        })
+        setRatings(res.data)
+      } catch (err) {
+        console.error('Failed to fetch reviews:', err)
+        setRatings([])
+      } finally {
         setLoading(false)
-      })
-      .catch(() => setLoading(false))
-  }, [college?.name])
+      }
+    }
+
+    fetchReviews()
+  }, [college?.name, axiosPublic])
 
   let ratingDisplay
   if (loading) {
@@ -31,7 +41,7 @@ export default function CollegeDetails() {
     const avg = (ratings.reduce((sum, r) => sum + Number(r.rating), 0) / ratings.length).toFixed(1)
     ratingDisplay = (
       <span>
-        {avg} ⭐ ({ratings.length} rating{ratings.length > 1 ? 's' : ''})
+        {avg} ⭐ ({ratings.length} review{ratings.length > 1 ? 's' : ''})
       </span>
     )
   }

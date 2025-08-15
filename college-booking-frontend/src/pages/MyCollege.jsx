@@ -9,7 +9,7 @@ export default function MyCollege() {
   const [review, setReview] = useState({ collegeId: '', rating: 5, text: '' })
   const [loading, setLoading] = useState(true)
 
-  // Fetch user's applications using their email
+  // Fetch user's applications
   useEffect(() => {
     if (!user?.email) return
     const fetchApplications = async () => {
@@ -25,22 +25,26 @@ export default function MyCollege() {
     fetchApplications()
   }, [user])
 
-  const handleSubmitReview = (e) => {
+  // Submit review
+  const handleSubmitReview = async (e) => {
     e.preventDefault()
     if (!review.collegeId || !review.text) return
 
-    // Mock review submission
-    const newReview = {
-      id: crypto.randomUUID(),
-      collegeId: review.collegeId,
-      user: user?.name || user?.email,
-      rating: Number(review.rating),
-      text: review.text,
-      createdAt: new Date().toISOString()
-    }
+    try {
+      const college = applications.find(a => a._id === review.collegeId)
+      await axiosPublic.post('/reviews', {
+        collegeName: college?.collegeName,
+        rating: Number(review.rating),
+        comment: review.text,
+        userEmail: user.email
+      })
 
-    alert('Review added! It will show on the Home page.')
-    setReview({ collegeId: '', rating: 5, text: '' })
+      alert('Review added successfully! It will show on the Home page.')
+      setReview({ collegeId: '', rating: 5, text: '' })
+    } catch (err) {
+      console.error('Failed to submit review:', err)
+      alert('Failed to add review.')
+    }
   }
 
   if (loading) return <p className="text-center mt-4">Loading your applications...</p>
@@ -57,7 +61,7 @@ export default function MyCollege() {
             <div key={app._id} className="card">
               <div className="flex gap-3">
                 {app.image && (
-                  <img src={app.image} className="w-28 h-28 object-cover rounded-xl" />
+                  <img src={app.image} className="w-28 h-28 object-cover rounded-xl" alt="college" />
                 )}
                 <div>
                   <h3 className="text-lg font-semibold">{app.collegeName}</h3>
